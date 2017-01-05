@@ -1,7 +1,168 @@
 <!DOCTYPE html>
 <html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body, input, button {
+	font-family: arial, sans-serif;
+	font-size: 25px;
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #000000;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+
+tfoot {
+	background-color: dimgrey;
+	color:white;
+}
+
+.gpac{
+	background-color: #E0FFFF ;
+	padding: 10px;
+	font-weight: bold;
+}
+
+.del {
+	width: 100%;
+}
+
+</style>
+
+<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+<script>
+$(document).ready(function(){
+
+	function colSum(tdid, fid) {
+		var sum=0;
+		//iterate through each input and add to sum
+		$(tdid).each(function() {    
+
+			var value = $(this).text();
+			// add only if the value is number
+			if(!isNaN(value) && value.length != 0) 
+			{
+				sum += parseFloat(value);
+			}			
+		});
+		//change value of total
+		$(fid).html(sum);
+	}
+	
+	function calcGPA(){
+		var cpsum = $('#cpsum').text();	
+		var fgpsum = $('#fgpsum').text();
+		
+		var gpa = parseFloat(fgpsum) / parseFloat(cpsum);
+		
+		$('#res').html(gpa);
+	}
+	
+	function deleteRow(r) {
+		var i = r.parentNode.parentNode.rowIndex;
+		document.getElementById("myTable").deleteRow(i);
+	}
+
+    $("#add").click(function(){
+		var subj = $('#subject').val();	
+		var gpnt = $('#gpoint').val();
+		var cpnt = $('#cpoint').val();
+		var fgpnt = gpnt * cpnt;
+		
+		var delCel = '<td><button class="del">Delete</button></td>';
+	
+        $('#myTable > tbody:last-child').append('<tr>'+delCel+'<td>'+subj+'</td><td>'+gpnt+'</td><td class="cp">'+cpnt+'</td><td class="fgp">'+fgpnt+'</td></tr>');
+		
+		colSum('.cp','#cpsum');
+		colSum('.fgp','#fgpsum');
+		
+		calcGPA();
+    });
+	
+	$("#myTable").on('click', '.del', function () {
+		$(this).closest('tr').remove();
+		
+		colSum('.cp','#cpsum');
+		colSum('.fgp','#fgpsum');
+		
+		calcGPA();
+	});
+});
+</script>
+</head>
 <body>
-<h1>Hello World Welcome</h1>
-<p>I'm hosted with GitHub Pages.</p>
+<div data-role="main" class="ui-content">
+
+	<p>Subject:
+	<select id="subject" name="subject">
+	  <option value="OMGT">Operations Management</option>
+	  <option value="SHRM">Strategic Human Resource Management</option>
+	  <option value="MMGT">Marketing Management</option>
+	  <option value="LEAD">Leadership</option>
+	  <option value="SMGT">Strategic Management</option>
+	  <option value="CGOV">Corporate Governance</option>
+	  <option value="FMGT">Financial Management</option>
+	  <option value="PCM">Performance & Compensation Management</option>
+	  <option value="NPM">New Product Management</option>
+	  <option value="IMC">Integrated Marketing Communication</option>
+	  <option value="IB">International Business</option>
+	  <option value="PROJ">Final Project</option>
+	</select>
+	</p>
+	
+	<p>Grade Point:
+	<select id="gpoint" name="gpoint">
+	  <option value="7">High Distinction (HD)</option>
+	  <option value="6">Distinction (D)</option>
+	  <option value="5">Credit (C)</option>
+	  <option value="4.5">Pass Level 1 (P1)</option>
+	  <option value="4">Pass Level 2 (P2)</option>
+	</select>
+	</p>
+	
+	<p>Credit Point: <input id="cpoint" type="text" name="cpoint" value="10"></p>
+	<p><button id="add">Add</button></p>
+	
+	<p class="gpac"><span class="gpa">GPA:</span>&nbsp;<span id="res" class="gpa"></span></p>
+</div>
+
+<table id="myTable">
+  <tfoot>
+    <tr>
+	  <td></td>	
+      <td></td>
+      <td></td>
+	  <td id="cpsum">0</td>
+      <td id="fgpsum">0</td>
+    </tr>
+  </tfoot>
+
+  <tbody>
+    <tr>
+	  <th>Delete</th>
+	  <th>Subject</th>
+	  <th>Grade Point</th>
+	  <th>Credit Point</th>
+	  <th>Final Grade Points</th>
+	</tr>
+  </tbody>
+</table>
+
+<br />
+
 </body>
 </html>
